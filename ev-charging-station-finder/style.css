@@ -1,0 +1,234 @@
+.home-background {
+  background: url('image.jpg')no-repeat center center fixed; /* Adjusted position to right bottom corner */
+  background-size: cover;
+  min-height: 100vh; /* Ensure background covers full height */
+}
+
+/* Global styles */
+body {
+  background: url('image1.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh; 
+}
+/* Font styles for index.html */
+body.home-background {
+  font-family: Verdana, sans-serif; /* Use Verdana font */
+}
+
+h1, h2, p {
+  font-family: Verdana, sans-serif; /* Apply the Verdana font to headers and paragraphs */
+}
+/* Styling for h2 spans */
+.highlight-1 {
+  color: #121212; /* You can change this to any color you like */
+}
+
+.highlight-2 {
+  color: #2f09ee; /* You can change this to any color you like */
+}
+/* Styling for iframes */
+iframe {
+  width: 100%; /* Make iframe responsive */
+  height: auto; /* Maintain aspect ratio */
+  border: none; /* Remove default border */
+  max-width: 100%; /* Ensure it does not exceed the container's width */
+  border-radius: 8px; /* Rounded corners for aesthetic */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  margin: 0 auto; /* Center align iframe horizontally */
+  display: block; /* Ensure it behaves as a block element */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center; /* Center the content */
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 15px 0;
+  text-align: center;
+  animation: zoomIn 1s ease-in; /* Zoom-in animation */
+}
+
+header h1 {
+  margin: 0;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+header nav ul li {
+  display: inline;
+  margin-right: 15px;
+}
+
+header nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Responsive nav menu for smaller screens */
+@media (max-width: 768px) {
+  header nav ul li {
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+
+/* Hero Section */
+.hero {
+  color: rgba(3, 3, 3, 0.89);
+  height: 400px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  text-align: right;
+}
+
+.hero h2 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  animation: textLoop 6s infinite; /* Text loop animation */
+}
+
+.hero h3 {
+  font-size: 1.5rem;
+}
+
+/* Responsive hero text for smaller screens */
+@media (max-width: 768px) {
+  .hero h3 {
+    font-size: 2rem;
+  }
+
+  .hero h3 {
+    font-size: 1rem;
+  }
+}
+
+/* Animation for text looping */
+@keyframes textLoop {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+/* Rounded box with gradient background for other pages */
+.round-box {
+  background: linear-gradient(to right, #43cea2, #185a9d);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+  margin: 0 auto;
+  max-width: 500px;
+  text-align: center;
+}
+
+/* Responsive rounded box for smaller screens */
+@media (max-width: 768px) {
+  .round-box {
+    padding: 20px;
+    max-width: 100%;
+  }
+}
+
+form label {
+  margin: 10px 0 5px;
+  display: block;
+  font-size: 1.2rem;
+}
+
+form input, form textarea {
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+}
+
+form button {
+  padding: 10px 20px;
+  background-color: #98aadb;
+  color: #43cea2;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #43cea2;
+  color: white;
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* Responsive styles for footer */
+@media (max-width: 768px) {
+  footer {
+    padding: 20px;
+  }
+}
+
+/* Responsive iframe for Wokwi data section */
+iframe {
+  max-width: 100%;
+  height: auto;
+  border: 0;
+}
+
+/* Additional responsive adjustments for the entire layout */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  header nav ul li {
+    margin-right: 0;
+  }
+
+  .hero {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+  }
+
+  .hero h2 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+  }
+}

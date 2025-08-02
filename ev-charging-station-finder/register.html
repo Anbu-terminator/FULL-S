@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Charging Station Finder - Register</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Register</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="stations.html">Stations</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="batteryhealth.html">Battery Health</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Registration Form -->
+  <section>
+    <div class="container">
+      <div class="round-box">
+        <h2>CREATE A NEW ACCONT</h2>
+        <form id="register-form">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" placeholder="Enter your email" required>
+          
+          <label for="register-password">Password</label>
+          <input type="password" id="register-password" placeholder="Enter your password" required>
+          
+          <button type="submit">Register</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      
+      // Save registration data in localStorage
+      localStorage.setItem('registeredEmail', email);
+      localStorage.setItem('registeredPassword', password);
+      
+      alert('Registration successful! Please log in.');
+      
+      // Redirect to login page
+      window.location.href = 'login.html';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Charging Station Finder - Battery Health & Booking</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>EV Charging Station Finder</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="stations.html">Stations</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="batteryhealth.html">Battery Health</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <section class="booking-section">
+    <div class="container">
+      <div class="round-box">
+        <form id="booking-form">
+          <label for="station">Select Charging Station</label>
+          <select id="station">
+            <option value="Chennai">Chennai</option>
+            <option value="Bengaluru">Bengaluru</option>
+            <option value="Kochi">Kochi</option>
+            <option value="Tirupati">Tirupati</option>
+            <option value="Visakhapatnam">Visakhapatnam</option>
+          </select>
+
+          <label for="time">Select Time Slot</label>
+          <input type="time" id="time" required>
+
+          <label for="date">Select Date</label>
+          <input type="date" id="date" required>
+          <label for="email">Enter Your Email:</label>
+          <input type="email" id="email" required>
+
+          <button type="submit">Book Slot</button>
+        </form>
+
+        <div id="booking-status"></div> <!-- Booking status will be displayed here -->
+      </div>
+    </div>
+  </section>
+  <script>
+    // Check if the user is logged in
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      // If not logged in, redirect to login page
+      alert('You must be logged in to access this page.');
+      window.location.href = 'login.html';
+    }
+    
+    // Booking System Functionality
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+    
+      const station = document.getElementById('station').value;
+      const time = document.getElementById('time').value;
+      const date = document.getElementById('date').value;
+      const email = document.getElementById('email').value;
+    
+      // Display booking status
+      const bookingStatus = document.getElementById('booking-status');
+      bookingStatus.textContent = `Slot booked at ${station} on ${date} at ${time}. A confirmation email has been sent to ${email}.`;
+    
+      // Send confirmation email using EmailJS
+      const emailParams = {
+        to_email: email, // Sends the email to the entered email address
+        station_name: station,
+        booking_date: date,
+        booking_time: time
+      };
+    
+      emailjs.send("service_lo9sk6l", "template_wddwljm", emailParams)
+        .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+          bookingStatus.textContent += ' Confirmation email sent successfully!';
+        }, function(error) {
+          console.log('FAILED...', error);
+          bookingStatus.textContent += ' Failed to send confirmation email.';
+        });
+    
+      // Save booking info to localStorage
+      localStorage.setItem('selectedStation', station);
+      localStorage.setItem('bookingTime', time);
+      localStorage.setItem('bookingDate', date);
+    
+      // Redirect to battery health page
+      setTimeout(function() {
+        window.location.href = 'batteryhealth.html';
+      }, 2000); // Redirect after 2 seconds to give the email time to send
+    
+      // Clear the form
+      document.getElementById('booking-form').reset();
+    });
+    
+    // Battery health page logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const selectedStation = localStorage.getItem('selectedStation');
+      const bookingTime = localStorage.getItem('bookingTime');
+      const bookingDate = localStorage.getItem('bookingDate');
+    
+      if (selectedStation && bookingTime && bookingDate) {
+        document.getElementById('stationName').textContent = selectedStation;
+        document.getElementById('bookingTime').textContent = `Time: ${bookingTime}`;
+        document.getElementById('bookingDate').textContent = `Date: ${bookingDate}`;
+      }
+    });
+  </script>
+  
+  <!-- Include the EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      emailjs.init('kdYK8OBJE4oWeQykt'); // Your EmailJS user ID
+    })();
+  </script>
+  
+</body>
+</html>

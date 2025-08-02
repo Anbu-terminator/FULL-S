@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Charging Station Finder - Stations</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+
+  <!-- Include Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5eP5F21Qlh1FLVLdBk9mWi2A1Xvc7j-Q&callback=initMap" defer></script>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Find EV Charging Stations</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="stations.html">Stations</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="batteryhealth.html">Battery Health</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Station Search Form inside a rounded box -->
+  <section>
+    <div class="container">
+      <div class="round-box">
+        <h2>SEARCH FOR CHARGING STATIONS BY CITY</h2>
+        <form id="station-form">
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="Enter city name">
+          <button type="submit">Search</button>
+        </form>
+        <div id="station-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map Container -->
+  <section>
+    <div id="map" style="width: 100%; height: 500px;"></div> <!-- Map will be displayed here -->
+  </section>
+
+
+  <script>
+     /// Check if the user is logged in
+   if (localStorage.getItem('isLoggedIn') !== 'true') {
+      // If not logged in, redirect to login page
+      alert('You must be logged in to access this page.');
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('station-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const city = document.getElementById('city').value.toLowerCase();
+      const stationList = document.getElementById('station-list');
+    });
+    let map;
+
+    // Array of EV charging stations
+    const stations = [
+      { name: 'Tanishq, Cathedral Road', city: 'Chennai', lat: 13.0487, lng: 80.2560 },
+      { name: 'Sree Gokulam Motors', city: 'Chennai', lat: 13.0453, lng: 80.1360 },
+      { name: 'IOCL AB Enterprises', city: 'Chennai', lat: 12.8446, lng: 80.2252 },
+      { name: 'IOCL Ms Immanuel Agencies', city: 'Chennai', lat: 13.0345, lng: 80.1951 },
+      { name: 'IOCL Ms SRI SAI Balaji Agencies', city: 'Chennai', lat: 13.0701, lng: 80.2247 },
+      { name: 'Relux Experience Centre', city: 'Chennai', lat: 13.0098, lng: 80.2122 },
+      { name: 'EESL Alandur Metro Station', city: 'Chennai', lat: 13.0026, lng: 80.2000 },
+      { name: 'Balamanikandan Fuels-BPCL', city: 'Ramanathapuram', lat: 9.3688, lng: 78.8313 },
+      { name: 'EV Charging - Rasipuram', city: 'Rasipuram', lat: 11.4561, lng: 78.1798 },
+      { name: 'EV Station - Ooty', city: 'Ooty', lat: 11.3592, lng: 76.7405 },
+      { name: 'Relux Cochin Centre', city: 'Kochi', lat: 9.9312, lng: 76.2673 },
+      { name: 'Tata Power EV Station', city: 'Thiruvananthapuram', lat: 8.5241, lng: 76.9366 },
+      { name: 'Fort Kochi EV Station', city: 'Kochi', lat: 9.9640, lng: 76.2436 },
+      { name: 'BYD Kochi', city: 'Kochi', lat: 10.0214, lng: 76.3412 },
+      { name: 'Kaloor EV Station', city: 'Kochi', lat: 9.9969, lng: 76.2999 },
+      { name: 'Trivandrum Technopark EV Station', city: 'Thiruvananthapuram', lat: 8.5553, lng: 76.8814 },
+      { name: 'Tata Power EV Station - MG Road', city: 'Bengaluru', lat: 12.9716, lng: 77.5946 },
+      { name: 'BESCOM EV Charging Station', city: 'Bengaluru', lat: 12.9719, lng: 77.6412 },
+      { name: 'Ather Space Charging Station', city: 'Bengaluru', lat: 12.9657, lng: 77.6094 },
+      { name: 'Jio-bp Pulse Charging Station', city: 'Bengaluru', lat: 12.9538, lng: 77.6309 },
+      { name: 'Shell EV Charging Station', city: 'Bengaluru', lat: 12.9279, lng: 77.6271 },
+      { name: 'APEPDCL EV Station', city: 'Visakhapatnam', lat: 17.6868, lng: 83.2185 },
+      { name: 'Relux Vijayawada Station', city: 'Vijayawada', lat: 16.5062, lng: 80.6480 },
+      { name: 'EV Station Tirupati', city: 'Tirupati', lat: 13.6288, lng: 79.4192 },
+      { name: 'Tata Power EV Charging - Guntur', city: 'Guntur', lat: 16.3067, lng: 80.4365 },
+      { name: 'Kia EV Station', city: 'Anantapur', lat: 14.6819, lng: 77.6006 }
+    ];
+
+    // Initialize the map
+    function initMap() {
+      // Default location for the map (India)
+      const defaultLocation = { lat: 20.5937, lng: 78.9629 };
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: defaultLocation,
+        zoom: 5
+      });
+    }
+
+    // Handle station search by city
+    document.getElementById('station-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const city = document.getElementById('city').
+      value.toLowerCase();
+      const stationList = document.getElementById('station-list');
+      
+      // Filter stations based on city
+      const filteredStations = stations.filter(station => station.city.toLowerCase() === city);
+      
+      // Clear previous results and markers
+      stationList.innerHTML = '';
+      clearMarkers();
+
+      // Display filtered stations
+      if (filteredStations.length > 0) {
+        filteredStations.forEach(station => {
+          const stationItem = document.createElement('div');
+          stationItem.textContent = `${station.name} - ${station.city}`;
+          stationList.appendChild(stationItem);
+
+          // Add marker on the map for each station
+          addMarker(station);
+        });
+
+        // Center map around the first station found
+        map.setCenter({ lat: filteredStations[0].lat, lng: filteredStations[0].lng });
+        map.setZoom(12); // Zoom in to the location
+      } else {
+        stationList.textContent = 'No stations found in this city';
+        map.setCenter({ lat: 20.5937, lng: 78.9629 }); // Reset to default (India)
+        map.setZoom(5);
+      }
+    });
+
+    // Array to hold map markers
+    let markers = [];
+
+    // Function to add a marker for each station
+    function addMarker(station) {
+      const marker = new google.maps.Marker({
+        position: { lat: station.lat, lng: station.lng },
+        map: map,
+        title: station.name
+      });
+      markers.push(marker);
+    }
+
+    // Function to clear all markers
+    function clearMarkers() {
+      for (let i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+      markers = [];
+    }
+  </script>
+</body>
+</html>

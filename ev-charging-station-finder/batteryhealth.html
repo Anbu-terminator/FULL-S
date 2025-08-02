@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Charging Station Finder - Battery Health</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    .data {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+
+    iframe {
+      margin-top: 30px;
+      border: 1px solid #cccccc;
+    }
+
+    .chart-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .chart-box {
+      margin: 10px;
+    }
+
+    #configForm {
+      margin-bottom: 30px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      margin: 10px;
+      text-align: center;
+      align-items: center;
+      font-size: 16px;
+      max-width: 200px;
+  
+    }
+
+    input[type="submit"] {
+      padding: 10px 10px;
+      font-size: 16px;
+      text-align: center;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      max-width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Battery Health</h1>
+      <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="stations.html">Stations</a></li>
+            <li><a href="booking.html">Booking</a></li>
+            <li><a href="batteryhealth.html">Battery Health</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="register.html">Register</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- User Input for Channel ID and API Key -->
+   <section>
+  <div class="container">
+    <div class="round-box">
+  <section>
+    <form id="configForm">
+      <h2>Enter Your Channel ID and API Key</h2>
+      <input type="text" id="channelID" placeholder="Channel ID" required>
+      <input type="text" id="apiKey" placeholder="API Key" required>
+      <input type="submit" value="Save">
+    </form>
+  </section>
+</div>
+</div>
+</section>
+
+  <!-- ThingSpeak Data Display Section -->
+  <section>
+    <div class="container">
+      <div class="round-box">
+  <section>
+    <h2>Real-Time Battery Health Data</h2>
+
+    <!-- Containers to display data from different fields -->
+    
+    <div class="data" id="field1">Loading Field 1 data...</div>
+    <div class="data" id="field2">Loading Field 2 data...</div>
+    <div class="data" id="field3">Loading Field 3 data...</div>
+    <div class="data" id="field4">Loading Field 4 data...</div>
+  </div>
+</div>
+</section>
+
+    <!-- Charts for all fields -->
+    <div class="chart-container">
+      <!-- Field 1 Chart -->
+      <div class="chart-box">
+        <h3>Field 1 Chart</h3>
+        <iframe id="chart1" width="450" height="260" allowfullscreen></iframe>
+      </div>
+
+      <!-- Field 2 Chart -->
+      <div class="chart-box">
+        <h3>Field 2 Chart</h3>
+        <iframe id="chart2" width="450" height="260" allowfullscreen></iframe>
+      </div>
+
+      <!-- Field 3 Chart -->
+      <div class="chart-box">
+        <h3>Field 3 Chart</h3>
+        <iframe id="chart3" width="450" height="260" allowfullscreen></iframe>
+      </div>
+
+      <!-- Field 4 Chart -->
+      <div class="chart-box">
+        <h3>Field 4 Chart</h3>
+        <iframe id="chart4" width="450" height="260" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+    // If not logged in, redirect to login page
+    alert('You must be logged in to access this page.');
+    window.location.href = 'login.html';
+  }
+
+    // Handle form submission to save Channel ID and API Key
+    document.getElementById('configForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const channelID = document.getElementById('channelID').value;
+      const apiKey = document.getElementById('apiKey').value;
+
+      // Save Channel ID and API Key to localStorage
+      localStorage.setItem('channelID', channelID);
+      localStorage.setItem('apiKey', apiKey);
+
+      // Reload the page to use the new settings
+      location.reload();
+    });
+
+    // Function to fetch data from a specific field
+    async function fetchFieldData(fieldNumber, elementId) {
+      const channelID = localStorage.getItem('channelID');
+      const apiKey = localStorage.getItem('apiKey');
+
+
+
+      try {
+        const url = `https://api.thingspeak.com/channels/${channelID}/fields/${fieldNumber}/last.json?api_key=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Update the corresponding HTML element with fetched data
+        document.getElementById(elementId).textContent = `Field ${fieldNumber} Data: ${data[`field${fieldNumber}`]}`;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    // Load charts using saved Channel ID
+    function loadCharts() {
+      const channelID = localStorage.getItem('channelID');
+      if (!channelID) return;
+
+      document.getElementById('chart1').src = `https://thingspeak.com/channels/${channelID}/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line`;
+      document.getElementById('chart2').src = `https://thingspeak.com/channels/${channelID}/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line`;
+      document.getElementById('chart3').src = `https://thingspeak.com/channels/${channelID}/charts/3?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line`;
+      document.getElementById('chart4').src = `https://thingspeak.com/channels/${channelID}/charts/4?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line`;
+    }
+
+    // Fetch data for all fields when the page loads
+    window.onload = function() {
+      fetchFieldData(1, 'field1');
+      fetchFieldData(2, 'field2');
+      fetchFieldData(3, 'field3');
+      fetchFieldData(4, 'field4');
+      loadCharts();
+    }
+
+    // Optionally, refresh data at regular intervals (e.g., every 15 seconds)
+    setInterval(function() {
+      fetchFieldData(1, 'field1');
+      fetchFieldData(2, 'field2');
+      fetchFieldData(3, 'field3');
+      fetchFieldData(4, 'field4');
+    }, 15000); // Refresh every 15 seconds
+    // batteryhealth.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    const station = localStorage.getItem('selectedStation');
+    const bookingTime = localStorage.getItem('bookingTime');
+
+    // Display the booking and station info
+    document.getElementById('stationInfo').textContent = `Station: ${station}`;
+    document.getElementById('bookingInfo').textContent = `Booking Time: ${bookingTime}`;
+
+    // Simulate a battery health check
+    document.getElementById('checkBattery').addEventListener('click', function() {
+        const batteryHealth = Math.floor(Math.random() * 100) + 1; // Random battery health percentage
+        document.getElementById('batteryHealth').textContent = `Battery Health: ${batteryHealth}%`;
+    });
+});
+
+  </script>
+
+</body>
+</html>
